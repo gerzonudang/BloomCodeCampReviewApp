@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -17,23 +16,24 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
+    @Column(name = "cohort_start_date")
     private LocalDate cohortStartDate;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
     private String password;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 
-    private List<Authority> authorities;
+
+   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   private List<Authority> authorities;
 
     public User() {
     }
 
-    public User( LocalDate cohortStartDate, String username, String password, List<Authority> authorities) {
+    public User(LocalDate cohortStartDate, String username, String password) {
         this.cohortStartDate = cohortStartDate;
         this.username = username;
         this.password = password;
-        this.authorities = authorities;
     }
 
     public Long getId() {
@@ -52,52 +52,52 @@ public class User implements UserDetails {
         this.cohortStartDate = cohortStartDate;
     }
 
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    @Override
-    public String getPassword() {
-        return password;
-    }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> roles = new ArrayList<>();
-        this.authorities.stream()
-                .forEach(authority -> roles.add(new SimpleGrantedAuthority(authority.getAuthority())));
-
-        return roles;
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Authority authority : this.authorities) {
+            authorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
+        }
+        return authorities;
     }
 
-    public void setAuthorities(List<Authority> authorities) {
-        this.authorities = authorities;
+    @Override
+    public String getPassword() {
+        return password;
     }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
+
+
+
 }

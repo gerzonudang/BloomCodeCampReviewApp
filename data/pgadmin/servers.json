@@ -8,7 +8,8 @@
       "Password": "docker",
       "Host": "pgFP-api-starter",
       "SSLMode": "prefer",
-      "MaintenanceDB": "postgres"
+      "MaintenanceDB": "api-starter-0121"
     }
   }
 }
+//$2a$10$vH7LMEE/AC4LP6qkNgr8kObucE3U5uPjNUY10J1F2vQ3KRNL4Z7PS
