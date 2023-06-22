@@ -1,10 +1,12 @@
 package com.hcc.entities;
 
+import com.hcc.DTO.AssignmentResponse;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name="assignments")
-public class Assignment {
+public class Assignment{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,12 +25,6 @@ public class Assignment {
     @Column(name = "code_review_video_url")
     private String reviewVideoUrl;
 
-//    @Column(name = "user_id")
-//    private Long userId;
-
-//    @Column(name = "code_reviewer_id")
-//    private Long codeReviewerId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -42,6 +38,7 @@ public class Assignment {
     }
 
     public Assignment(String status, Integer number, String githubUrl, String branch, String reviewVideoUrl) {
+
         this.status = status;
         this.number = number;
         this.githubUrl = githubUrl;
@@ -97,4 +94,16 @@ public class Assignment {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public User getCodeReviewer() {
+        return codeReviewer;
+    }
+    public User user() {
+        return user;
+    }
+
 }
