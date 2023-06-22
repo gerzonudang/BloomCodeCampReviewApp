@@ -2,10 +2,22 @@ package com.hcc.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public class Authority implements GrantedAuthority {
+import javax.persistence.*;
 
+@Entity
+@Table(name="authorities")
+public class Authority implements GrantedAuthority {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "authority")
     private String authority;
+
+//    @Column(name = "user_id")
+//    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Authority() {
@@ -15,6 +27,8 @@ public class Authority implements GrantedAuthority {
         this.authority = authority;
         this.user = user;
     }
+
+
 
     @Override
     public String getAuthority() {
