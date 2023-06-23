@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,22 +30,26 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) { //AuthResponse //@Valid
+        Authentication authentication = null;
         try {
-            authenticationManager.authenticate(
+            authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                            loginRequest.getPassword())
-            );
+                            loginRequest.getPassword()));
+            if (authentication.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                User user = (User) authentication.getPrincipal();
+            } else {
+                return ResponseEntity.status(401).body("Invalid username or password");
+            }
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
-        final String token = jwtUtils.generateToken((User) userDetails);
-
-        return ResponseEntity.ok(new AuthenticationResponse(token));
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        String encodedPassword = passwordEncoder.encode(loginRequest.getPassword());
-//        return ResponseEntity.ok(encodedPassword);
+        //final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+        //final String token = jwtUtils.generateToken((User) userDetails);
+        //return ResponseEntity.ok(new AuthenticationResponse(token, userDetails.getUsername()));
+        final String token = jwtUtils.generateToken((User) authentication.getPrincipal());
+        return ResponseEntity.ok(new AuthenticationResponse(token, loginRequest.getUsername()));
     }
     @GetMapping("/login")
     public ResponseEntity<?> showLogin() { //AuthResponse //@Valid
