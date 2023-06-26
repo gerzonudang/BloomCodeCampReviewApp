@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
@@ -27,7 +28,6 @@ public class AuthController {
 
     @Autowired
     private JWTUtils jwtUtils;
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) { //AuthResponse //@Valid
         Authentication authentication = null;
