@@ -3,10 +3,11 @@ package com.hcc.entities;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name="authorities")
-public class Authority implements GrantedAuthority {
+public class Authority implements GrantedAuthority, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +31,7 @@ public class Authority implements GrantedAuthority {
 
 
 
+
     @Override
     public String getAuthority() {
         return this.authority;
@@ -45,5 +47,8 @@ public class Authority implements GrantedAuthority {
 
     public void setAuthority(String authority) {
         this.authority = authority;
+    }
+    public String toString() {
+        return getAuthority();
     }
 }

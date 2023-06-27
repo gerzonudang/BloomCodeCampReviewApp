@@ -2,7 +2,9 @@ package com.hcc.controllers;
 
 import com.hcc.DTO.AuthenticationResponse;
 import com.hcc.DTO.LoginRequest;
+import com.hcc.entities.Authority;
 import com.hcc.entities.User;
+import com.hcc.repositories.AuthorityRepository;
 import com.hcc.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +13,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 
@@ -27,10 +30,16 @@ public class AuthController {
     private UserDetailsService userDetailsService;
 
     @Autowired
+    AuthorityRepository authRepo;
+
+    @Autowired
     private JWTUtils jwtUtils;
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) { //AuthResponse //@Valid
         Authentication authentication = null;
+        String userType  = "";
+        List<Authority> authorityList = null;
+
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
@@ -38,6 +47,11 @@ public class AuthController {
             if (authentication.isAuthenticated()) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 User user = (User) authentication.getPrincipal();
+
+                authorityList = authRepo.findByUserId(user.getId());
+
+                userType = authorityList.get(0).toString();
+                System.out.println(authorityList.get(0).toString() + " authorities "  + user.getId() );
             } else {
                 return ResponseEntity.status(401).body("Invalid username or password");
             }
@@ -49,7 +63,7 @@ public class AuthController {
         //final String token = jwtUtils.generateToken((User) userDetails);
         //return ResponseEntity.ok(new AuthenticationResponse(token, userDetails.getUsername()));
         final String token = jwtUtils.generateToken((User) authentication.getPrincipal());
-        return ResponseEntity.ok(new AuthenticationResponse(token, loginRequest.getUsername()));
+        return ResponseEntity.ok(new AuthenticationResponse(token, loginRequest.getUsername(), userType));
     }
     @GetMapping("/login")
     public ResponseEntity<?> showLogin() { //AuthResponse //@Valid
