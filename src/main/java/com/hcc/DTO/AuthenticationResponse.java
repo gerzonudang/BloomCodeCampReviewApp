@@ -4,15 +4,16 @@ import java.io.Serializable;
 
 public class AuthenticationResponse implements Serializable {
     private final String token;
+    private final Long userId;
     private final String username;
-
     private final String userType;
 //    private final List<Authority> authorityList;
 
 
 
-    public AuthenticationResponse(String token, String username, String userType) {
+    public AuthenticationResponse(String token, Long userId, String username, String userType) {
         this.token = token;
+        this.userId = userId;
         this.username = username;
 //        this.userType = userType;
 //        this.authorityList = authorityList;
@@ -30,9 +31,9 @@ public class AuthenticationResponse implements Serializable {
     public String getUserType() {
         return userType;
     }
-//    public List<Authority> getAuthorityList() {
-//        return authorityList;
-//    }
 
+    public Long getUserId() {
+        return userId;
+    }
 }
 

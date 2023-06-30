@@ -13,15 +13,25 @@ public class AssignmentService {
     @Autowired
     private AssignmentRepository assignmentRepository;
 
+
+
     public List<Assignment> getAllAssignments() {
         return assignmentRepository.findAll();
+    }
+    public List<Assignment> findByUserId(Long id) {
+        return assignmentRepository.findByUserId(id);
+    }
+    public List<Assignment> findByReviewerId(Long id) {
+        return assignmentRepository.findByCodeReviewerId(id);
     }
 
     public Assignment getAssignmentById(Long id) {
         return (Assignment) assignmentRepository.findById(id).orElse(null);
     }
 
+
     public Assignment createAssignment(Assignment assignment) {
+
         return assignmentRepository.save(assignment);
     }
 

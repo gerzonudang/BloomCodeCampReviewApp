@@ -10,6 +10,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     List<Assignment> findAll();
 
     Optional<Assignment> findById(Long id);
-
+    List<Assignment> findByUserId(Long userId);
+    List<Assignment> findByCodeReviewerId(Long codeReviewerId);
     Assignment save(Assignment assignment);
 }

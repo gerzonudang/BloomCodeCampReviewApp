@@ -5,6 +5,7 @@ import com.hcc.DTO.UserResponse;
 import com.hcc.entities.Assignment;
 import com.hcc.entities.User;
 import com.hcc.services.AssignmentService;
+import com.hcc.services.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ public class AssignmentController {
 
     @Autowired
     private AssignmentService assignmentService;
+    @Autowired
+    private UserDetailServiceImpl userDetailService;
 
     @GetMapping
     public ResponseEntity<List<AssignmentResponse>> getAllAssignments() {
@@ -30,7 +33,7 @@ public class AssignmentController {
         for (Assignment assignment : assignments) {
             UserResponse user = new UserResponse();
             UserResponse codeReviewer = new UserResponse();
-            codeReviewer.setUsername(assignment.getCodeReviewer().getUsername());
+            codeReviewer.setUsername(assignment.getCodeReviewer().getUsername()==null ? "" : assignment.getCodeReviewer().getUsername());
             user.setUsername(assignment.getUser().getUsername());
             user.setId(assignment.getUser().getId());
             codeReviewer.setId(assignment.getCodeReviewer().getId());
@@ -61,13 +64,30 @@ public class AssignmentController {
         }
         return ResponseEntity.ok(assignment);
     }
+    @GetMapping("/learner/{learner_id}")
+    public ResponseEntity<Assignment> getAssignmentByUserId(@PathVariable("learner_id") Long learner_id) {
+        // Implement the logic to fetch an assignment by ID
+        Assignment assignment = assignmentService.getAssignmentById(learner_id);
+        if (assignment == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(assignment);
+    }
 
     @PostMapping
-    public ResponseEntity<Assignment> createAssignment(@RequestBody Assignment assignment) {
+    public ResponseEntity<AssignmentResponse> createAssignment(@RequestBody Assignment assignment) {
         // Implement the logic to create a new assignment
-
+        System.out.println("submitting post"+ assignment.getUser().getUsername());
+        User user = (User) userDetailService.loadUserByUsername(assignment.getUser().getUsername());
+        assignment.setUser(user);
         Assignment createdAssignment = assignmentService.createAssignment(assignment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdAssignment);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setUsername(user.getUsername());
+        AssignmentResponse assignmentResponse = new AssignmentResponse(assignment.getId(), assignment.getStatus(),
+                assignment.getNumber(), assignment.getGithubUrl(), assignment.getBranch(), assignment.getReviewVideoUrl(),
+                userResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(assignmentResponse);
     }
 
     @PutMapping("/{id}")

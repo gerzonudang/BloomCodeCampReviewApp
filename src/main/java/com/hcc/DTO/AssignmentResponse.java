@@ -14,7 +14,15 @@ public class AssignmentResponse {
     private UserResponse codeReviewer;
 
 // Constructors, getters, and setters
-
+public AssignmentResponse(Long id, String status, Integer number, String githubUrl, String branch, String reviewVideoUrl, UserResponse user) {
+    this.id = id;
+    this.status = status;
+    this.number = number;
+    this.githubUrl = githubUrl;
+    this.branch = branch;
+    this.reviewVideoUrl = reviewVideoUrl;
+    this.user = user;
+}
     public AssignmentResponse(Long id, String status, Integer number, String githubUrl, String branch, String reviewVideoUrl, UserResponse user, UserResponse codeReviewer) {
         this.id = id;
         this.status = status;

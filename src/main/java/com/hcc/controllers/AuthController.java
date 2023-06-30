@@ -39,6 +39,7 @@ public class AuthController {
         Authentication authentication = null;
         String userType  = "";
         List<Authority> authorityList = null;
+        Long userId = 0L;
 
         try {
             authentication = authenticationManager.authenticate(
@@ -47,7 +48,7 @@ public class AuthController {
             if (authentication.isAuthenticated()) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 User user = (User) authentication.getPrincipal();
-
+                userId = user.getId();
                 authorityList = authRepo.findByUserId(user.getId());
 
                 userType = authorityList.get(0).toString();
@@ -63,7 +64,7 @@ public class AuthController {
         //final String token = jwtUtils.generateToken((User) userDetails);
         //return ResponseEntity.ok(new AuthenticationResponse(token, userDetails.getUsername()));
         final String token = jwtUtils.generateToken((User) authentication.getPrincipal());
-        return ResponseEntity.ok(new AuthenticationResponse(token, loginRequest.getUsername(), userType));
+        return ResponseEntity.ok(new AuthenticationResponse(token, userId, loginRequest.getUsername(), userType));
     }
     @GetMapping("/login")
     public ResponseEntity<?> showLogin() { //AuthResponse //@Valid
