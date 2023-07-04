@@ -37,22 +37,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtFilter jwtFilter;
 
+    // Configure the authentication manager
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailServiceImpl).passwordEncoder(customPasswordEncoder.getPasswordEncoder());
     }
 
+    // Configure the HTTP security
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // Disable CSRF protection and set session management policy to stateless
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
+                // Handle exceptions and set response status to unauthorized
                 .authenticationEntryPoint((request, response, exception) -> {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage() + " with request content " + request.toString());
                 })
                 .and()
                 .authorizeRequests()
+                // Define authorization rules for specific URLs and HTTP methods
                 .antMatchers("/api/auth/login").permitAll()
                 .antMatchers("/api/auth/error").permitAll()
                 .antMatchers("/api/auth/validate").permitAll()
@@ -68,16 +73,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(corsFilter(), CorsFilter.class);
     }
 
+    // Create a bean for the authentication manager
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
+    // Create a bean for the CorsFilter to handle CORS configuration
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
+        // Configure allowed origins, methods, and headers
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");

@@ -1,11 +1,15 @@
 package com.hcc.services;
 
 import com.hcc.entities.Assignment;
+import com.hcc.entities.User;
+import com.hcc.exceptions.ResourceNotFoundException;
 import com.hcc.repositories.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssignmentService {
@@ -19,7 +23,11 @@ public class AssignmentService {
         return assignmentRepository.findAll();
     }
     public List<Assignment> findByUserId(Long id) {
-        return assignmentRepository.findByUserId(id);
+        Optional<List<Assignment>> assignmentsOpt = Optional.ofNullable(assignmentRepository.findByUserId(id));
+//        user.setUsername(username);
+//        user.setPassword(passwordEncoder.getPasswordEncoder().encode("asdfasdf"));
+        return assignmentsOpt.orElseThrow(() -> new ResourceNotFoundException("No Resources found"));
+
     }
     public List<Assignment> findByReviewerId(Long id) {
         return assignmentRepository.findByCodeReviewerId(id);

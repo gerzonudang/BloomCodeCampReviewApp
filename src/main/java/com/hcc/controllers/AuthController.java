@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-
 @RequestMapping("/api/auth")
 public class AuthController {
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -34,17 +34,20 @@ public class AuthController {
 
     @Autowired
     private JWTUtils jwtUtils;
+
+    // Handle login request
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) { //AuthResponse //@Valid
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = null;
-        String userType  = "";
+        String userType = "";
         List<Authority> authorityList = null;
         Long userId = 0L;
 
         try {
+            // Perform authentication using the provided username and password
             authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                            loginRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
             if (authentication.isAuthenticated()) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 User user = (User) authentication.getPrincipal();
@@ -52,7 +55,7 @@ public class AuthController {
                 authorityList = authRepo.findByUserId(user.getId());
 
                 userType = authorityList.get(0).toString();
-                System.out.println(authorityList.get(0).toString() + " authorities "  + user.getId() );
+                System.out.println(authorityList.get(0).toString() + " authorities " + user.getId());
             } else {
                 return ResponseEntity.status(401).body("Invalid username or password");
             }
@@ -60,14 +63,15 @@ public class AuthController {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
 
-        //final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
-        //final String token = jwtUtils.generateToken((User) userDetails);
-        //return ResponseEntity.ok(new AuthenticationResponse(token, userDetails.getUsername()));
+        // Generate JWT token and return it along with user details
         final String token = jwtUtils.generateToken((User) authentication.getPrincipal());
         return ResponseEntity.ok(new AuthenticationResponse(token, userId, loginRequest.getUsername(), userType));
     }
+
+    // Endpoint for testing purposes
     @GetMapping("/login")
-    public ResponseEntity<?> showLogin() { //AuthResponse //@Valid
+    public ResponseEntity<?> showLogin() {
+        // Generate the BCrypt encoded password for demonstration
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode("mypassword");
         return ResponseEntity.ok(encodedPassword + " your password");
