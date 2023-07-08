@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 @Entity
 @Table(name = "users")
@@ -23,6 +24,10 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "is_verified")
+    private Boolean isVerified;
+    @Column(name = "verification_code")
+    private String verificationCode;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Authority> authorities;
 
@@ -94,5 +99,21 @@ public class User implements UserDetails {
 
     public Long getId() {
         return this.id;
+    }
+
+    public Date getVerificationTimeGenerated() {
+        return new Date();
+    }
+
+    public long getVerificationExpiresIn() {
+        return 1L;
+    }
+
+    public void setVerified(boolean b) {
+        this.isVerified = true;
+    }
+
+    public void setVerificationCode(String s) {
+        this.verificationCode = s;
     }
 }

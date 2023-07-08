@@ -27,4 +27,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
 //        user.setPassword(passwordEncoder.getPasswordEncoder().encode("asdfasdf"));
         return userOpt.orElseThrow(() -> new UsernameNotFoundException("Invalid Credentials"));
     }
+
+
 }
