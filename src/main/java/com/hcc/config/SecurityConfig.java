@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/validate").permitAll()
                 .antMatchers("/favicon.ico").permitAll()
                 .antMatchers("/static/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/account/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/assignments/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/assignments").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/assignments").authenticated()

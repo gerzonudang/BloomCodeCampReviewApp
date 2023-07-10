@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -28,6 +29,10 @@ public class User implements UserDetails {
     private Boolean isVerified;
     @Column(name = "verification_code")
     private String verificationCode;
+
+    @Column(name = "verification_expiry")
+    private LocalDateTime verificationExpiry;
+    @Column()
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Authority> authorities;
 
@@ -59,6 +64,7 @@ public class User implements UserDetails {
     public void setAuthorities(List<Authority> authorities) {
         this.authorities = authorities;
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -115,5 +121,29 @@ public class User implements UserDetails {
 
     public void setVerificationCode(String s) {
         this.verificationCode = s;
+    }
+
+    public LocalDate getCohortStartDate() {
+        return cohortStartDate;
+    }
+
+    public Boolean isVerified() {
+        return isVerified;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public LocalDateTime getVerificationExpiry() {
+        return verificationExpiry;
+    }
+
+    public void setVerificationExpiry(LocalDateTime verificationExpiry) {
+        this.verificationExpiry = verificationExpiry;
+    }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
     }
 }

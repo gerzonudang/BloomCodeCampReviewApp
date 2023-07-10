@@ -2,6 +2,8 @@ package com.hcc.controllers;
 
 import com.hcc.DTO.AuthenticationResponse;
 import com.hcc.DTO.LoginRequest;
+import com.hcc.DTO.VerifyRequest;
+import com.hcc.DTO.VerifyResponse;
 import com.hcc.entities.Authority;
 import com.hcc.entities.User;
 import com.hcc.repositories.AuthorityRepository;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,6 +71,8 @@ public class AuthController {
         final String token = jwtUtils.generateToken((User) authentication.getPrincipal());
         return ResponseEntity.ok(new AuthenticationResponse(token, userId, loginRequest.getUsername(), userType));
     }
+
+
 
     // Endpoint for testing purposes
     @GetMapping("/login")

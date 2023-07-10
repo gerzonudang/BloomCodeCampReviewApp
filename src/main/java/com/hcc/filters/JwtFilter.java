@@ -39,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
-
+        System.out.println("getting here" );
         // Get Jwt Token
         final String token = header.split(" ")[1].trim();
 
