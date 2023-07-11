@@ -5,6 +5,7 @@ public class VerifyResponse {
     private Long id;
 
     private Boolean isVerified;
+    private String code;
 
 
     public VerifyResponse() {
@@ -14,10 +15,11 @@ public class VerifyResponse {
         this.email = email;
     }
 
-    public VerifyResponse(String email, Long id, Boolean isVerified) {
+    public VerifyResponse(String email, Long id, Boolean isVerified, String code) {
         this.email = email;
         this.id = id;
         this.isVerified = isVerified;
+        this.code = code;
     }
 
     public VerifyResponse(Long id) {
@@ -39,5 +41,21 @@ public class VerifyResponse {
 
     public void setVerified(Boolean verified) {
         isVerified = verified;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

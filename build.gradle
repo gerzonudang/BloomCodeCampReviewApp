@@ -16,6 +16,8 @@ repositories {
 
 dependencies {
 	implementation 'com.sun.mail:javax.mail:1.6.2'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-gson:0.11.5'
@@ -38,5 +40,15 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+bootJar {
+	// other configuration
+
+	// Set Thymeleaf properties
+	manifest {
+		attributes 'Thymeleaf-Mode': 'HTML5',
+				'Thymeleaf-Template-Resolver-Order': '1',
+				'Thymeleaf-Enable-SpringEL-Compiler': 'true'
+	}
 }
 

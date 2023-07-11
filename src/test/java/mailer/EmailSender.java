@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
 public class EmailSender {
@@ -15,13 +17,13 @@ public class EmailSender {
         String senderEmail = "noreply@supportzebra.com";
         String userName = "AKIASKFBBHWC2AFKXROT";
         String senderPassword = "BNcZqYE+8bM6fTMfWwUpkokTz9+VRwcUQ+aqpiBlniNM";
-
         // Recipient's email address
         String recipientEmail = "gerzon.udang@talentamp.com";
 
         // Email subject and content
-        String subject = "Test Email";
-        String content = "This is a test email.";
+        String subject = "Email Verification";
+        String content = "Click the button below to verify your email:\n\n"
+                + "<button>Verify Email</button>";
 
         // Set up mail server properties
         Properties properties = new Properties();
@@ -40,12 +42,28 @@ public class EmailSender {
 
         try {
             // Create a new email message
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(senderEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
-            message.setFrom(new InternetAddress(senderEmail));
             message.setSubject(subject);
-            message.setText(content);
+
+            // Create a multipart message to include both text and HTML content
+            MimeMultipart multipart = new MimeMultipart("alternative");
+
+            // Create a text part
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(content, "utf-8");
+
+            // Create an HTML part
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(content, "text/html; charset=utf-8");
+
+            // Add both parts to the multipart message
+            multipart.addBodyPart(textPart);
+            multipart.addBodyPart(htmlPart);
+
+            // Set the content of the message to the multipart message
+            message.setContent(multipart);
 
             // Send the email
             Transport.send(message);
@@ -55,4 +73,5 @@ public class EmailSender {
             System.out.println("Failed to send email. Error: " + e.getMessage());
         }
     }
+
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Verification Result</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 100px;
+        }
+        .message {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .url {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Email Verification Result</h2>
+    <p class="message" th:text="${message}"></p>
+    <p class="url">Visit the <a th:href="@{http://localhost:8080/}" target="_blank">homepage</a> to continue.</p>
+</div>
+</body>
+</html>

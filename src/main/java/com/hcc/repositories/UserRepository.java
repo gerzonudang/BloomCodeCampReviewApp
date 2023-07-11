@@ -22,4 +22,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("UPDATE User u SET u.username = :#{#updatedUser.username}, u.password = :#{#updatedUser.password}, u.cohortStartDate = :#{#updatedUser.cohortStartDate}, u.isVerified = :#{#updatedUser.isVerified}, u.verificationCode = :#{#updatedUser.verificationCode}, u.verificationExpiry = :#{#updatedUser.verificationExpiry} WHERE u.id = :id")
     void updateUserById(Long id, @Param("updatedUser") User updatedUser);
 
+
 }
